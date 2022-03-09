@@ -1,9 +1,13 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable import/extensions */
+/* eslint-disable no-undef */
+/* eslint-disable import/no-unresolved */
 import React, { useEffect, useState } from "react";
 import { Product } from "../../interface/api/products";
 import { IState } from "../../interface/component/product";
 import "../../styles.css";
 
-export const ProductsList = () => {
+export function ProductsList() {
   const [state, setState] = useState<IState>({
     data: [],
     filterItems: [],
@@ -14,10 +18,10 @@ export const ProductsList = () => {
   });
   useEffect(() => {
     const fetchProducts = () => {
-      fetch(`https://my-json-server.typicode.com/benirvingplt/products/products`)
+      fetch("https://my-json-server.typicode.com/benirvingplt/products/products")
         .then((response) => response.json())
         .then((data) => {
-          data.forEach(function (element: Product) {
+          data.forEach((element: Product) => {
             element.quantity = 0;
           });
           setState({ ...state, data, loading: false });
@@ -29,16 +33,20 @@ export const ProductsList = () => {
   const getTotal = (data: Array<Product>, isFilter: boolean) => {
     let sum = 0;
     let payload;
-    for (let index = 0; index < data.length; index++) {
+    for (let index:number = 0; index < data.length; index += 1) {
       const element = data[index];
-      const quantity = element["quantity"] ? element.quantity : 0;
+      const quantity = element.quantity ? element.quantity : 0;
       const itemPrice = quantity * element.price;
-      sum = sum + itemPrice;
+      sum += itemPrice;
     }
     if (isFilter) {
-      payload = { ...state, filterItems: data, isFilter: true, sum };
+      payload = {
+        ...state, filterItems: data, isFilter: true, sum,
+      };
     } else {
-      payload = { ...state, data, isFilter, sum };
+      payload = {
+        ...state, data, isFilter, sum,
+      };
     }
     setState(payload);
   };
@@ -48,8 +56,7 @@ export const ProductsList = () => {
       if (item.id === id && type === "increment") {
         item.quantity = item.quantity ? item.quantity + 1 : 1;
       } else if (item.id === id && type === "decrement") {
-        item.quantity =
-          item.quantity && item.quantity > 0 ? item.quantity - 1 : 0;
+        item.quantity = item.quantity && item.quantity > 0 ? item.quantity - 1 : 0;
       }
     });
     const payload = state.isFilter ? state.filterItems : cloneData;
@@ -57,7 +64,7 @@ export const ProductsList = () => {
   };
   const changeHandler = (e: any) => {
     if (e.currentTarget.value) {
-      const data = state.data;
+      const { data } = state;
       const result = data.filter((x) => x.colour === e.currentTarget.value);
       getTotal(result, true);
     } else {
@@ -66,7 +73,7 @@ export const ProductsList = () => {
   };
   const renderProducts: () => JSX.Element[] | JSX.Element = () => {
     const data = state.isFilter ? state.filterItems : state.data;
-    if (data.length === 0) return <div>No Product Available</div>;
+    if (data.length === 0) return <div> No Product Available</div>;
     return data.map((product: Product) => (
       <div
         data-testid="product-item"
@@ -74,7 +81,7 @@ export const ProductsList = () => {
         className=" mx-auto Cart-Items"
       >
         <div className="image-box">
-          <img src={product.img} style={{ width: "120px", height: "120px" }} />
+          <img src={product.img} alt="" style={{ width: "120px", height: "120px" }} />
         </div>
         <div className="about">
           <p className="title">{product.name}</p>
@@ -82,9 +89,8 @@ export const ProductsList = () => {
         </div>
         <div className="counter">
           <div
-            onClick={() => {
-              countHandler("decrement", product.id);
-            }}
+            onClick={() => { countHandler("decrement", product.id); }}
+            aria-hidden="true"
             className="btn btn-danger"
           >
             -
@@ -94,13 +100,17 @@ export const ProductsList = () => {
             onClick={() => {
               countHandler("increment", product.id);
             }}
+            aria-hidden="true"
             className="btn btn-success"
           >
             +
           </div>
         </div>
         <div className="prices">
-          <div className="amount">${product.price}</div>
+          <div className="amount">
+            $
+            {product.price}
+          </div>
         </div>
       </div>
     ));
@@ -114,7 +124,7 @@ export const ProductsList = () => {
     );
   }
   if (state.error) {
-    return <div>Something wen't wrong</div>;
+    return <div>Something went wrong</div>;
   }
   return (
     <main className="wrapper">
@@ -122,16 +132,16 @@ export const ProductsList = () => {
         <div className="Header">
           <h1 className="text-center">Shopping Cart</h1>
           <div className="custom-select">
-          <select
-            onChange={changeHandler}
-            className="form-select mb-10"
-            aria-label="Default select example"
-          >
-            <option value="">Select one color</option>
-            <option value="Red">Red</option>
-            <option value="Black">Black</option>
-            <option value="Stone">Stone</option>
-          </select>
+            <select
+              onChange={changeHandler}
+              className="form-select mb-10"
+              aria-label="Default select example"
+            >
+              <option value="">Select one color</option>
+              <option value="Red">Red</option>
+              <option value="Black">Black</option>
+              <option value="Stone">Stone</option>
+            </select>
           </div>
         </div>
 
@@ -142,13 +152,14 @@ export const ProductsList = () => {
               <div className="Subtotal">Total</div>
             </div>
             <div className="total-amount">
-              ${state.sum ? state.sum.toFixed(2) : 0}
+              $
+              {state.sum ? state.sum.toFixed(2) : 0}
             </div>
           </div>
         </div>
       </div>
     </main>
   );
-};
+}
 
 export default ProductsList;

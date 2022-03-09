@@ -1,3 +1,6 @@
+/* eslint-disable import/no-unresolved */
+/* eslint-disable no-undef */
+/* eslint-disable react/react-in-jsx-scope */
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 // import react-testing methods
@@ -9,6 +12,8 @@ import {
 
 // add custom jest matchers from jest-dom
 import "@testing-library/jest-dom";
+// eslint-disable-next-line import/no-unresolved
+// eslint-disable-next-line import/extensions
 import { ProductsList } from "./index";
 
 const server = setupServer();
@@ -24,20 +29,18 @@ describe("Given Notes", () => {
     server.use(
       rest.get(
         "https://my-json-server.typicode.com/benirvingplt/products/products",
-        (req, res, ctx) => {
-          return res(
-            ctx.json([
-              {
-                id: 1,
-                colour: "Black",
-                name: "Black Sheet Strappy Textured Glitter Bodycon Dress",
-                price: 10,
-                img: "http://cdn-img.prettylittlething.com/9/0/a/a/90aa90903a135ee59594f47c7685aa7ef3046e44_cly8063_1.jpg?imwidth=1024",
-              },
-            ])
-          );
-        }
-      )
+        (req, res, ctx) => res(
+          ctx.json([
+            {
+              id: 1,
+              colour: "Black",
+              name: "Black Sheet Strappy Textured Glitter Bodycon Dress",
+              price: 10,
+              img: "http://cdn-img.prettylittlething.com/9/0/a/a/90aa90903a135ee59594f47c7685aa7ef3046e44_cly8063_1.jpg?imwidth=1024",
+            },
+          ]),
+        ),
+      ),
     );
     render(<ProductsList />);
     await waitForElementToBeRemoved(() => screen.queryByText("Loading..."));
@@ -47,10 +50,8 @@ describe("Given Notes", () => {
     server.use(
       rest.get(
         "https://my-json-server.typicode.com/benirvingplt/products/products",
-        (req, res, ctx) => {
-          return res(ctx.json([]));
-        }
-      )
+        (req, res, ctx) => res(ctx.json([])),
+      ),
     );
     render(<ProductsList />);
 
@@ -65,18 +66,16 @@ describe("Given Notes", () => {
     server.use(
       rest.get(
         "https://my-json-server.typicode.com/benirvingplt/products/products",
-        (req, res, ctx) => {
-          return res(
-            ctx.status(404),
-            ctx.json({ message: "Internal Server Error" })
-          );
-        }
-      )
+        (req, res, ctx) => res(
+          ctx.status(404),
+          ctx.json({ message: "Internal Server Error" }),
+        ),
+      ),
     );
     render(<ProductsList />);
     // wait for Data to load
     await waitForElementToBeRemoved(() => screen.queryByText("Loading..."));
-    const errorMsg = screen.getByText("Something wen't wrong");
+    const errorMsg = screen.getByText("Something went wrong");
     expect(errorMsg).toBeInTheDocument();
   });
 });
