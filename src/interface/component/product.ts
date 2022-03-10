@@ -1,4 +1,7 @@
-import {Product} from '../api/products';
+/* eslint-disable import/extensions */
+/* eslint-disable import/no-unresolved */
+import { Product } from "../api/products";
+
 export interface IState {
   data: Array<Product>;
   filterItems: Array<Product>;

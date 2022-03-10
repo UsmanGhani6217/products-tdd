@@ -32,6 +32,10 @@
               "tsx": "never"
             }
          ],
+         "import/no-unresolved": [
+            2, 
+            { "caseSensitive": false }
+         ],
         "react/jsx-filename-extension": [1, { "extensions": [".ts", ".tsx"] }],
         "jsx-a11y/alt-text": [ 2, {
             "elements": [ "img", "object", "area", "input[type=\"image\"]" ],
