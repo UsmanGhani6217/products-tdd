@@ -2,12 +2,10 @@
 /* eslint-disable import/extensions */
 /* eslint-disable import/no-unresolved */
 import React from "react";
-import ProductsList from "./components/products";
+import Products from "./components/products";
 
 const App: React.FC = () => (
-  <div>
-    <ProductsList />
-  </div>
+  <Products />
 );
 
 export default App;

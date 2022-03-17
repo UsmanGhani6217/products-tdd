@@ -14,7 +14,7 @@ import {
 import "@testing-library/jest-dom";
 // eslint-disable-next-line import/no-unresolved
 // eslint-disable-next-line import/extensions
-import { ProductsList } from "./index";
+import { Products } from "./index";
 
 const server = setupServer();
 describe("Given Notes", () => {
@@ -42,7 +42,7 @@ describe("Given Notes", () => {
         ),
       ),
     );
-    render(<ProductsList />);
+    render(<Products />);
     await waitForElementToBeRemoved(() => screen.queryByText("Loading..."));
     screen.getAllByTestId("product-item");
   });
@@ -53,7 +53,7 @@ describe("Given Notes", () => {
         (req, res, ctx) => res(ctx.json([])),
       ),
     );
-    render(<ProductsList />);
+    render(<Products />);
 
     // wait for Data to load
     await waitForElementToBeRemoved(() => screen.queryByText("Loading..."));
@@ -72,7 +72,7 @@ describe("Given Notes", () => {
         ),
       ),
     );
-    render(<ProductsList />);
+    render(<Products />);
     // wait for Data to load
     await waitForElementToBeRemoved(() => screen.queryByText("Loading..."));
     const errorMsg = screen.getByText("Something went wrong");

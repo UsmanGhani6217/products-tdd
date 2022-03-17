@@ -1,39 +1,48 @@
+/* eslint-disable no-debugger */
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/extensions */
 /* eslint-disable no-undef */
 /* eslint-disable import/no-unresolved */
 import React, { useEffect, useState } from "react";
-import { Product } from "../../interface/api/products";
+import { IProduct } from "../../interface/api/products";
+import ProductItem from "./ProductItem";
+import Filter from "./Filter";
+import Footer from "./Footer";
 import { IState } from "../../interface/component/product";
+import { getProducts } from "../../api/product";
 import "../../styles.css";
 
-export function ProductsList() {
-  const [state, setState] = useState<IState>({
-    data: [],
-    filterItems: [],
-    isFilter: false,
-    loading: true,
-    error: false,
-    sum: 0,
-  });
+const initialState = {
+  data: [],
+  filterItems: [],
+  isFilter: false,
+  loading: true,
+  error: false,
+  sum: 0,
+};
+export function Products() {
+  const [state, setState] = useState<IState>(initialState);
   useEffect(() => {
-    const fetchProducts = () => {
-      fetch("https://my-json-server.typicode.com/benirvingplt/products/products")
-        .then((response) => response.json())
-        .then((data) => {
-          data.forEach((element: Product) => {
-            element.quantity = 0;
-          });
-          setState({ ...state, data, loading: false });
-        })
-        .catch(() => setState({ ...state, error: true, loading: false }));
-    };
+    // eslint-disable-next-line no-use-before-define
     fetchProducts();
   }, []);
-  const getTotal = (data: Array<Product>, isFilter: boolean) => {
+
+  const fetchProducts = (): void => {
+    getProducts()
+      .then((response) => {
+        // eslint-disable-next-line no-debugger
+        const { data }: IProduct[] | any = response;
+        data.forEach((element: IProduct) => {
+          element.quantity = 0;
+        });
+        setState({ ...state, data, loading: false });
+      })
+      .catch(() => setState({ ...state, error: true, loading: false }));
+  };
+  const getTotal = (data: Array<IProduct>, isFilter: boolean): void => {
     let sum = 0;
     let payload;
-    for (let index:number = 0; index < data.length; index += 1) {
+    for (let index: number = 0; index < data.length; index += 1) {
       const element = data[index];
       const quantity = element.quantity ? element.quantity : 0;
       const itemPrice = quantity * element.price;
@@ -41,16 +50,23 @@ export function ProductsList() {
     }
     if (isFilter) {
       payload = {
-        ...state, filterItems: data, isFilter: true, sum,
+        ...state,
+        filterItems: data,
+        isFilter: true,
+        sum,
       };
     } else {
       payload = {
-        ...state, data, isFilter, sum,
+        ...state,
+        data,
+        isFilter,
+        sum,
       };
     }
+    debugger;
     setState(payload);
   };
-  const countHandler = (type: string, id: number) => {
+  const countHandler = (type: string, id: number): void => {
     const cloneData = [...state.data];
     cloneData.forEach((item) => {
       if (item.id === id && type === "increment") {
@@ -62,60 +78,26 @@ export function ProductsList() {
     const payload = state.isFilter ? state.filterItems : cloneData;
     getTotal(payload, state.isFilter);
   };
-  const changeHandler = (e: any) => {
-    if (e.currentTarget.value) {
+  const changeHandler = (e: React.ChangeEvent<HTMLSelectElement>): void => {
+    if (e.target.value) {
       const { data } = state;
-      const result = data.filter((x) => x.colour === e.currentTarget.value);
+      const result = data.filter((x) => x.colour === e.target.value);
       getTotal(result, true);
     } else {
       getTotal(state.data, false);
     }
   };
-  const renderProducts: () => JSX.Element[] | JSX.Element = () => {
+  const renderProducts = (): JSX.Element[] | JSX.Element => {
     const data = state.isFilter ? state.filterItems : state.data;
     if (data.length === 0) return <div> No Product Available</div>;
-    return data.map((product: Product) => (
-      <div
-        data-testid="product-item"
+    return data.map((product: IProduct) => (
+      <ProductItem
         key={product.id}
-        className=" mx-auto Cart-Items"
-      >
-        <div className="image-box">
-          <img src={product.img} alt="" style={{ width: "120px", height: "120px" }} />
-        </div>
-        <div className="about">
-          <p className="title">{product.name}</p>
-          <p className="subtitle">{product.price}</p>
-        </div>
-        <div className="counter">
-          <div
-            onClick={() => { countHandler("decrement", product.id); }}
-            aria-hidden="true"
-            className="btn btn-danger"
-          >
-            -
-          </div>
-          <div className="count">{product.quantity}</div>
-          <div
-            onClick={() => {
-              countHandler("increment", product.id);
-            }}
-            aria-hidden="true"
-            className="btn btn-success"
-          >
-            +
-          </div>
-        </div>
-        <div className="prices">
-          <div className="amount">
-            $
-            {product.price}
-          </div>
-        </div>
-      </div>
+        countHandler={countHandler}
+        product={product}
+      />
     ));
   };
-
   if (state.loading) {
     return (
       <div className="loader-wrapper">
@@ -131,35 +113,13 @@ export function ProductsList() {
       <div className="CartContainer">
         <div className="Header">
           <h1 className="text-center">Shopping Cart</h1>
-          <div className="custom-select">
-            <select
-              onChange={changeHandler}
-              className="form-select mb-10"
-              aria-label="Default select example"
-            >
-              <option value="">Select one color</option>
-              <option value="Red">Red</option>
-              <option value="Black">Black</option>
-              <option value="Stone">Stone</option>
-            </select>
-          </div>
+          <Filter changeHandler={changeHandler} />
         </div>
-
         {renderProducts()}
-        <div className="checkout">
-          <div className="total">
-            <div>
-              <div className="Subtotal">Total</div>
-            </div>
-            <div className="total-amount">
-              $
-              {state.sum ? state.sum.toFixed(2) : 0}
-            </div>
-          </div>
-        </div>
+        <Footer sum={state.sum} />
       </div>
     </main>
   );
 }
 
-export default ProductsList;
+export default Products;

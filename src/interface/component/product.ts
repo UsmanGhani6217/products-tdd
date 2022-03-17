@@ -1,10 +1,10 @@
 /* eslint-disable import/extensions */
 /* eslint-disable import/no-unresolved */
-import { Product } from "../api/products";
+import { IProduct } from "../api/products";
 
 export interface IState {
-  data: Array<Product>;
-  filterItems: Array<Product>;
+  data: Array<IProduct>;
+  filterItems: Array<IProduct>;
   isFilter: boolean;
   loading: boolean;
   error:boolean;
