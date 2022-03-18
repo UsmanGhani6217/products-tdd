@@ -1,11 +1,9 @@
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable react/prop-types */
-import React from "react";
+import React from 'react';
 
 type IProps= {
      sum : number
 }
-export default function Footer(props:IProps) {
+export default function Footer(props:IProps):JSX.Element {
   return (
     <div className="checkout">
       <div className="total">

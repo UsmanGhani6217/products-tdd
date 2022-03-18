@@ -1,11 +1,5 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable no-param-reassign */
-/* eslint-disable import/extensions */
-/* eslint-disable no-undef */
-/* eslint-disable import/no-unresolved */
-import React from "react";
-import { ProductProps } from "../../interface/api/products";
+import React from 'react';
+import { ProductProps } from '../../interface/api/products';
 
 type IProps = ProductProps & {
   countHandler: (type: string, id:number) => void
@@ -21,7 +15,7 @@ function ProductItem(props: IProps): JSX.Element {
         <img
           src={props.product.img}
           alt=""
-          style={{ width: "120px", height: "120px" }}
+          style={{ width: '120px', height: '120px' }}
         />
       </div>
       <div className="about">
@@ -31,7 +25,7 @@ function ProductItem(props: IProps): JSX.Element {
       <div className="counter">
         <div
           onClick={() => {
-            props.countHandler("decrement", props.product.id);
+            props.countHandler('decrement', props.product.id);
           }}
           aria-hidden="true"
           className="btn btn-danger"
@@ -41,7 +35,7 @@ function ProductItem(props: IProps): JSX.Element {
         <div className="count">{props.product.quantity}</div>
         <div
           onClick={() => {
-            props.countHandler("increment", props.product.id);
+            props.countHandler('increment', props.product.id);
           }}
           aria-hidden="true"
           className="btn btn-success"

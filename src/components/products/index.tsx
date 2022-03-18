@@ -1,16 +1,11 @@
-/* eslint-disable no-debugger */
-/* eslint-disable no-param-reassign */
-/* eslint-disable import/extensions */
-/* eslint-disable no-undef */
-/* eslint-disable import/no-unresolved */
-import React, { useEffect, useState } from "react";
-import { IProduct } from "../../interface/api/products";
-import ProductItem from "./ProductItem";
-import Filter from "./Filter";
-import Footer from "./Footer";
-import { IState } from "../../interface/component/product";
-import { getProducts } from "../../api/product";
-import "../../styles.css";
+import React, { useEffect, useState } from 'react';
+import { IProduct } from '../../interface/api/products';
+import ProductItem from './ProductItem';
+import Filter from './Filter';
+import Footer from './Footer';
+import { IState } from '../../interface/component/product';
+import { getProducts } from '../../api/product';
+import '../../styles.css';
 
 const initialState = {
   data: [],
@@ -20,17 +15,11 @@ const initialState = {
   error: false,
   sum: 0,
 };
-export function Products() {
+export function Products(): JSX.Element {
   const [state, setState] = useState<IState>(initialState);
-  useEffect(() => {
-    // eslint-disable-next-line no-use-before-define
-    fetchProducts();
-  }, []);
-
   const fetchProducts = (): void => {
     getProducts()
-      .then((response) => {
-        // eslint-disable-next-line no-debugger
+      .then((response: any) => {
         const { data }: IProduct[] | any = response;
         data.forEach((element: IProduct) => {
           element.quantity = 0;
@@ -39,10 +28,13 @@ export function Products() {
       })
       .catch(() => setState({ ...state, error: true, loading: false }));
   };
+  useEffect(() => {
+    fetchProducts();
+  }, []);
   const getTotal = (data: Array<IProduct>, isFilter: boolean): void => {
     let sum = 0;
     let payload;
-    for (let index: number = 0; index < data.length; index += 1) {
+    for (let index = 0; index < data.length; index += 1) {
       const element = data[index];
       const quantity = element.quantity ? element.quantity : 0;
       const itemPrice = quantity * element.price;
@@ -63,15 +55,14 @@ export function Products() {
         sum,
       };
     }
-    debugger;
     setState(payload);
   };
   const countHandler = (type: string, id: number): void => {
     const cloneData = [...state.data];
     cloneData.forEach((item) => {
-      if (item.id === id && type === "increment") {
+      if (item.id === id && type === 'increment') {
         item.quantity = item.quantity ? item.quantity + 1 : 1;
-      } else if (item.id === id && type === "decrement") {
+      } else if (item.id === id && type === 'decrement') {
         item.quantity = item.quantity && item.quantity > 0 ? item.quantity - 1 : 0;
       }
     });

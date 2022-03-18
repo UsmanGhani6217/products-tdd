@@ -1,12 +1,9 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable no-nested-ternary */
-import React from "react";
+import React from 'react';
 
 type IProps = {
   changeHandler: (e: React.ChangeEvent<HTMLSelectElement>) => void
 };
-function PreRender(props: IProps): any {
+function PreRender(props: IProps): JSX.Element {
   return (
     <div className="custom-select">
       <select
